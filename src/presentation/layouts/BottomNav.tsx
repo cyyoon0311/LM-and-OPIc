@@ -16,7 +16,7 @@ export function BottomNav() {
 
   return (
     <motion.nav
-      className="absolute bottom-0 left-0 right-0 h-[101px] bg-white border-t border-[#e5e5e5] flex items-start"
+      className="absolute bottom-0 left-0 right-0 h-[101px] bg-white border-t border-gray-200 flex items-start"
       initial={{ opacity: 0, y: 12 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.35, delay: 0.2, ease: 'easeOut' }}

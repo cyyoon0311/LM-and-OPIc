@@ -16,10 +16,7 @@ export function NavItem({ label, active, icon, onClick }: NavItemProps) {
       transition={{ type: 'spring', stiffness: 400, damping: 20 }}
     >
       {icon}
-      <span
-        className="text-[12px] tracking-[-0.5px]"
-        style={{ color: active ? '#171717' : '#737373' }}
-      >
+      <span className={`text-xs ${active ? 'text-black' : 'text-gray-500'}`}>
         {label}
       </span>
     </motion.button>
