@@ -14,9 +14,9 @@ export function LevelSlider({ label, value, onChange }: LevelSliderProps) {
   return (
     <div className="space-y-2">
       <div className="flex items-center justify-between">
-        <span className="text-[14px] text-[#404040] tracking-[-0.5px]">{label}</span>
+        <span className="text-sm text-gray-700">{label}</span>
         <motion.div
-          className="bg-[#262626] text-white text-[12px] rounded-full px-3 py-[3px] tracking-[-0.5px] whitespace-nowrap"
+          className="bg-gray-800 text-white text-xs rounded-full px-3 py-[3px] whitespace-nowrap"
           layout
           transition={{ type: 'spring', stiffness: 400, damping: 35 }}
         >
@@ -25,7 +25,7 @@ export function LevelSlider({ label, value, onChange }: LevelSliderProps) {
       </div>
 
       <div className="relative h-[18px] flex items-center">
-        <div className="absolute w-full h-2 bg-[#e5e5e5] rounded-full border-[0.5px] border-[#b7b5b5]" />
+        <div className="absolute w-full h-2 bg-gray-200 rounded-full border-[0.5px] border-gray-300" />
         <motion.div
           className="absolute h-2 bg-[#0075ff] rounded-full"
           animate={{ width: `${fillPercent}%` }}
@@ -54,7 +54,7 @@ export function LevelSlider({ label, value, onChange }: LevelSliderProps) {
           return (
             <span
               key={level}
-              className="absolute text-[12px] text-[#737373] tracking-[-0.5px] -translate-x-1/2 select-none"
+              className="absolute text-xs text-gray-500 -translate-x-1/2 select-none"
               style={{ left: `${pct}%` }}
             >
               {level}
