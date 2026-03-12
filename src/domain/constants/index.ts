@@ -5,8 +5,6 @@ export const LEVELS: readonly OPIcLevel[] = [
   'IM2',
   'IM3',
   'IH',
-  'IL',
-  'AM',
   'AL',
 ] as const
 

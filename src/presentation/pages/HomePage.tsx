@@ -1,3 +1,4 @@
+import { Link } from 'react-router-dom'
 import { motion } from 'framer-motion'
 import { useSettingsStore } from '@/domain/stores/useSettingsStore'
 import { TOPIC_ROWS } from '@/domain/constants'
@@ -75,6 +76,12 @@ export default function HomePage() {
         >
           Start pattern learning
         </motion.button>
+        <Link
+          to="/notion-test"
+          className="block text-center text-[12px] text-[#737373] underline"
+        >
+          Notion DB Test →
+        </Link>
       </motion.section>
     </motion.div>
   )
