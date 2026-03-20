@@ -1,14 +1,13 @@
 import { useState } from 'react'
-import { motion } from 'framer-motion'
+import { motion, AnimatePresence } from 'framer-motion'
 import { useSettingsStore } from '@/domain/stores/useSettingsStore'
 import { LEVELS } from '@/domain/constants'
 
-const FILLER_LABELS = ['Low', 'Medium', 'High'] as const
-const FILLER_DESCRIPTIONS = [
-  'More concise, fewer filler words.',
-  'Balanced natural speech.',
-  'Very conversational, frequent fillers.',
-]
+const FILLER_OPTIONS = [
+  { label: 'Low', desc: 'More concise, fewer filler words.' },
+  { label: 'Medium', desc: 'Balanced natural speech.' },
+  { label: 'High', desc: 'Very conversational, frequent fillers.' },
+] as const
 
 interface ScriptSegment {
   text: string
@@ -63,15 +62,14 @@ export default function ScriptPage() {
           Generate OPIc script
         </h2>
 
-        {/* Tags */}
         <div className="flex flex-wrap gap-2">
-          <span className="px-2 py-1 text-xs text-black bg-gray-100 border border-gray-200 rounded-sm tracking-[-0.5px]">
+          <span className="px-2 py-1 text-xs text-gray-600 bg-gray-50 border border-gray-200 rounded-sm tracking-[-0.5px]">
             Target: {targetLevel}
           </span>
-          <span className="px-2 py-1 text-xs text-black bg-gray-100 border border-gray-200 rounded-sm tracking-[-0.5px]">
+          <span className="px-2 py-1 text-xs text-gray-600 bg-gray-50 border border-gray-200 rounded-sm tracking-[-0.5px]">
             Topics: {selectedTopics.slice(0, 3).join(', ')}
           </span>
-          <span className="px-2 py-1 text-xs text-black bg-gray-100 border border-gray-200 rounded-sm tracking-[-0.5px]">
+          <span className="px-2 py-1 text-xs text-gray-600 bg-gray-50 border border-gray-200 rounded-sm tracking-[-0.5px]">
             Length: 120–150 words
           </span>
         </div>
@@ -81,74 +79,58 @@ export default function ScriptPage() {
         </p>
       </motion.section>
 
-      {/* Filler usage section */}
+      {/* Filler usage — Segmented Control */}
       <motion.section className="space-y-3" variants={sectionVariants}>
         <h3 className="text-base font-normal text-black tracking-[-0.5px]">
           Filler usage
         </h3>
 
-        <div className="space-y-3">
-          {/* Custom step selector */}
-          <div className="flex items-center gap-1">
-            {[0, 1, 2].map((step) => (
-              <button
-                key={step}
-                className="flex-1 flex flex-col items-center"
-                onClick={() => setFillerLevel(step)}
+        {/* Segmented control */}
+        <div className="relative flex bg-gray-100 rounded-lg p-[3px]">
+          {/* Sliding indicator */}
+          <motion.div
+            className="absolute top-[3px] bottom-[3px] bg-white rounded-[6px]"
+            style={{ width: `calc(${100 / 3}% - 2px)` }}
+            animate={{ left: `calc(${fillerLevel * (100 / 3)}% + 3px)` }}
+            transition={{ type: 'spring', stiffness: 400, damping: 35 }}
+          />
+          {FILLER_OPTIONS.map((opt, idx) => (
+            <button
+              key={opt.label}
+              className="relative z-10 flex-1 py-2 text-center"
+              onClick={() => setFillerLevel(idx)}
+            >
+              <motion.span
+                className="text-xs font-medium tracking-[-0.5px]"
+                animate={{ color: idx === fillerLevel ? '#171717' : '#737373' }}
+                transition={{ duration: 0.2 }}
               >
-                <div className="relative w-full flex justify-center">
-                  <motion.div
-                    className="w-3 h-3 rounded-full border"
-                    animate={{
-                      backgroundColor: step === fillerLevel ? '#171717' : step < fillerLevel ? '#171717' : '#e5e5e5',
-                      borderColor: step === fillerLevel ? '#d4d4d4' : 'transparent',
-                      scale: step === fillerLevel ? 1.3 : 1,
-                    }}
-                    transition={{ type: 'spring', stiffness: 400, damping: 25 }}
-                  />
-                </div>
-              </button>
-            ))}
-          </div>
-
-          {/* Track line */}
-          <div className="relative h-[2px] -mt-5 mx-auto" style={{ width: '66%' }}>
-            <div className="absolute inset-0 bg-gray-200 rounded-full" />
-            <motion.div
-              className="absolute inset-y-0 left-0 bg-black rounded-full"
-              animate={{ width: `${fillerLevel * 50}%` }}
-              transition={{ type: 'spring', stiffness: 300, damping: 30 }}
-            />
-          </div>
-
-          {/* Labels */}
-          <div className="flex justify-between">
-            {FILLER_LABELS.map((label, idx) => (
-              <div
-                key={label}
-                className="flex-1 text-center"
-              >
-                <p className="text-xs text-black tracking-[-0.5px]">{label}</p>
-              </div>
-            ))}
-          </div>
-
-          {/* Descriptions */}
-          <div className="flex justify-between">
-            {FILLER_DESCRIPTIONS.map((desc, idx) => (
-              <div key={idx} className="flex-1 text-center px-1">
-                <p className="text-xs text-gray-600 tracking-[-0.5px] leading-tight">{desc}</p>
-              </div>
-            ))}
-          </div>
+                {opt.label}
+              </motion.span>
+            </button>
+          ))}
         </div>
+
+        {/* Description for selected level */}
+        <AnimatePresence mode="wait">
+          <motion.p
+            key={fillerLevel}
+            className="text-xs text-gray-500 tracking-[-0.5px] text-center"
+            initial={{ opacity: 0, y: 4 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: -4 }}
+            transition={{ duration: 0.15 }}
+          >
+            {FILLER_OPTIONS[fillerLevel].desc}
+          </motion.p>
+        </AnimatePresence>
       </motion.section>
 
-      {/* Script preview section */}
+      {/* Script preview */}
       <motion.section variants={sectionVariants}>
-        <div className="bg-white border border-gray-200 rounded p-4 space-y-3">
+        <div className="bg-white border border-gray-200 rounded-lg p-4 space-y-3">
           <div className="flex items-center justify-between">
-            <span className="text-xs text-black tracking-[-0.5px]">
+            <span className="text-xs text-gray-500 tracking-[-0.5px]">
               Your script (auto-highlighted patterns)
             </span>
             {isGenerating && (
@@ -163,23 +145,22 @@ export default function ScriptPage() {
                     />
                   ))}
                 </div>
-                <span className="text-xs text-gray-600 tracking-[-0.5px]">Generating</span>
+                <span className="text-xs text-gray-500 tracking-[-0.5px]">Generating</span>
               </div>
             )}
           </div>
 
-          {/* Script content */}
-          <div className="space-y-1 text-sm leading-relaxed tracking-[-0.5px]">
+          <div className="space-y-2 text-sm leading-relaxed tracking-[-0.5px]">
             {SAMPLE_SCRIPT.map((paragraph, pIdx) => (
               <p key={pIdx} className="text-gray-700">
                 {paragraph.map((segment, sIdx) =>
                   segment.highlighted ? (
-                    <span
+                    <mark
                       key={sIdx}
-                      className="bg-black text-white rounded-sm px-1 py-[1px] text-sm"
+                      className="bg-amber-100 text-gray-800 rounded px-0.5 py-[1px]"
                     >
                       {segment.text}
-                    </span>
+                    </mark>
                   ) : (
                     <span key={sIdx}>{segment.text}</span>
                   ),
@@ -190,25 +171,51 @@ export default function ScriptPage() {
         </div>
       </motion.section>
 
-      {/* Actions section */}
-      <motion.section className="space-y-3" variants={sectionVariants}>
-        {/* More options toggle */}
+      {/* Actions */}
+      <motion.section className="space-y-3 pb-2" variants={sectionVariants}>
+        {/* More options — chevron accordion */}
         <button
-          className="flex items-center gap-1.5 text-sm text-gray-700 tracking-[-0.5px]"
+          className="flex items-center gap-1.5 text-sm text-gray-500 tracking-[-0.5px]"
           onClick={() => setShowMoreOptions((v) => !v)}
         >
-          <div className="w-4 h-4 border border-gray-400 rounded-sm flex items-center justify-center">
-            <div
-              className="w-2 h-[1.5px] border-b border-gray-500"
-              style={{ transform: showMoreOptions ? 'rotate(0)' : 'none' }}
+          <motion.svg
+            width="16"
+            height="16"
+            viewBox="0 0 16 16"
+            fill="none"
+            animate={{ rotate: showMoreOptions ? 180 : 0 }}
+            transition={{ duration: 0.2 }}
+          >
+            <path
+              d="M4 6L8 10L12 6"
+              stroke="#737373"
+              strokeWidth="1.5"
+              strokeLinecap="round"
+              strokeLinejoin="round"
             />
-          </div>
+          </motion.svg>
           <span>More options</span>
         </button>
 
-        {/* Regenerate button */}
+        <AnimatePresence>
+          {showMoreOptions && (
+            <motion.div
+              initial={{ height: 0, opacity: 0 }}
+              animate={{ height: 'auto', opacity: 1 }}
+              exit={{ height: 0, opacity: 0 }}
+              transition={{ duration: 0.2 }}
+              className="overflow-hidden"
+            >
+              <div className="pb-2 text-xs text-gray-500 tracking-[-0.5px]">
+                Additional script options will appear here.
+              </div>
+            </motion.div>
+          )}
+        </AnimatePresence>
+
+        {/* Primary CTA */}
         <motion.button
-          className="w-full h-[44px] bg-black text-white rounded text-sm tracking-[-0.5px]"
+          className="w-full h-[44px] bg-black text-white rounded-lg text-sm tracking-[-0.5px]"
           whileHover={{ scale: 1.015 }}
           whileTap={{ scale: 0.975 }}
           transition={{ type: 'spring', stiffness: 400, damping: 25 }}
@@ -217,8 +224,8 @@ export default function ScriptPage() {
           Regenerate script
         </motion.button>
 
-        {/* Save button */}
-        <button className="w-full text-center text-sm text-gray-700 tracking-[-0.5px] py-1">
+        {/* Ghost text link */}
+        <button className="w-full text-center text-sm text-gray-500 tracking-[-0.5px] py-1">
           Save script to My Library
         </button>
       </motion.section>

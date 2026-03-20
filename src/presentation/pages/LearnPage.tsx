@@ -109,9 +109,9 @@ export default function LearnPage() {
         <p className="text-base font-normal text-black tracking-[-0.5px]">
           {learnedCount} / {totalPatterns} patterns learned
         </p>
-        <div className="relative h-2 bg-gray-200 rounded-full overflow-hidden">
+        <div className="relative h-[5px] bg-gray-200 rounded-full overflow-hidden">
           <motion.div
-            className="absolute inset-y-0 left-0 bg-gray-800 rounded-full"
+            className="absolute inset-y-0 left-0 bg-[#3b82f6] rounded-full"
             animate={{ width: `${progressPercent}%` }}
             transition={{ type: 'spring', stiffness: 300, damping: 30 }}
           />
@@ -135,8 +135,8 @@ export default function LearnPage() {
         <AnimatePresence mode="wait">
           <motion.div
             key={currentIdx}
-            className="w-full bg-white border border-gray-200 rounded shadow-sm cursor-grab active:cursor-grabbing"
-            style={{ boxShadow: '0 2px 8px rgba(0,0,0,0.06)' }}
+            className="w-full bg-white border border-gray-200 rounded-lg cursor-grab active:cursor-grabbing"
+            style={{ boxShadow: '0 4px 20px rgba(0,0,0,0.08), 0 1px 4px rgba(0,0,0,0.04)' }}
             drag="x"
             dragConstraints={{ left: 0, right: 0 }}
             dragElastic={0.6}
@@ -151,21 +151,21 @@ export default function LearnPage() {
             onClick={() => setShowMeaning((v) => !v)}
           >
             {/* Category badge */}
-            <div className="px-4 pt-4 pb-2">
-              <span className="text-xs text-gray-500 tracking-[-0.5px]">
+            <div className="px-5 pt-5 pb-2">
+              <span className="text-xs text-[#3b82f6] bg-blue-50 px-2 py-0.5 rounded-full tracking-[-0.5px]">
                 {currentCard.category}
               </span>
             </div>
 
             {/* Pattern text */}
-            <div className="px-4 py-4">
+            <div className="px-5 py-5">
               <p className="text-xl font-normal text-black tracking-[-0.5px] leading-relaxed">
                 {currentCard.pattern}
               </p>
             </div>
 
             {/* Korean meaning */}
-            <div className="px-4 pb-4 min-h-[48px]">
+            <div className="px-5 pb-5 min-h-[48px]">
               <AnimatePresence>
                 {showMeaning ? (
                   <motion.p
@@ -197,21 +197,21 @@ export default function LearnPage() {
       <div className="space-y-3">
         <div className="flex gap-2">
           <motion.button
-            className="flex-1 h-[40px] rounded-full bg-gray-100 border border-gray-200 text-sm text-black tracking-[-0.5px]"
+            className="flex-1 h-[40px] rounded-full bg-white border border-gray-200 text-sm text-gray-600 tracking-[-0.5px]"
             whileTap={{ scale: 0.95 }}
             onClick={handlePrev}
           >
             Previous
           </motion.button>
           <motion.button
-            className="flex-1 h-[40px] rounded-full bg-gray-100 border border-gray-200 text-sm text-black tracking-[-0.5px]"
+            className="flex-1 h-[40px] rounded-full bg-white border border-gray-200 text-sm text-gray-600 tracking-[-0.5px]"
             whileTap={{ scale: 0.95 }}
             onClick={() => setShowMeaning(true)}
           >
             Show example
           </motion.button>
           <motion.button
-            className="flex-1 h-[40px] rounded-full bg-gray-100 border border-gray-200 text-sm text-black tracking-[-0.5px]"
+            className="flex-1 h-[40px] rounded-full bg-white border border-gray-200 text-sm text-gray-600 tracking-[-0.5px]"
             whileTap={{ scale: 0.95 }}
             onClick={handleNext}
           >

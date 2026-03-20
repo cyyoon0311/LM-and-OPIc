@@ -21,6 +21,7 @@ export default function RecordPage() {
   )
   const timerRef = useRef<ReturnType<typeof setInterval> | null>(null)
   const voiceRef = useRef<ReturnType<typeof setInterval> | null>(null)
+  const activeRef = useRef<HTMLParagraphElement | null>(null)
 
   const startCountdown = () => {
     setState('countdown')
@@ -63,6 +64,12 @@ export default function RecordPage() {
     }
   }, [state])
 
+  useEffect(() => {
+    if (activeRef.current) {
+      activeRef.current.scrollIntoView({ behavior: 'smooth', block: 'center' })
+    }
+  }, [currentSentenceIdx])
+
   const stopRecording = () => {
     setState('idle')
     setVoiceLevels(Array.from({ length: 12 }, () => 0.2))
@@ -81,8 +88,8 @@ export default function RecordPage() {
       animate={{ opacity: 1 }}
       transition={{ duration: 0.3 }}
     >
-      {/* Countdown / Recording state */}
       <AnimatePresence mode="wait">
+        {/* ── Countdown ── */}
         {state === 'countdown' && (
           <motion.div
             key="countdown"
@@ -110,51 +117,56 @@ export default function RecordPage() {
           </motion.div>
         )}
 
+        {/* ── Recording ── */}
         {state === 'recording' && (
           <motion.div
             key="recording"
-            className="flex-1 flex flex-col gap-4"
+            className="flex-1 flex flex-col gap-3 min-h-0"
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
           >
-            {/* Script follow-along */}
-            <div className="space-y-2">
-              <p className="text-sm text-gray-600 tracking-[-0.5px]">
+            {/* Script follow-along — real text */}
+            <div className="flex-1 min-h-0 flex flex-col">
+              <p className="text-sm text-gray-500 tracking-[-0.5px] mb-2">
                 Follow along while you speak
               </p>
-              <div className="bg-gray-50 border border-gray-200 rounded p-4 space-y-2">
+              <div className="flex-1 overflow-y-auto bg-gray-50 border border-gray-200 rounded-lg py-6 px-5 space-y-4">
                 {SCRIPT_SENTENCES.map((sentence, idx) => (
-                  <motion.div
+                  <motion.p
                     key={idx}
-                    className="h-2 rounded-sm"
+                    ref={idx === currentSentenceIdx ? activeRef : undefined}
+                    className="text-sm leading-relaxed tracking-[-0.5px] transition-colors duration-300"
                     animate={{
-                      backgroundColor:
+                      color:
                         idx < currentSentenceIdx
                           ? '#a3a3a3'
                           : idx === currentSentenceIdx
-                            ? '#404040'
-                            : '#e5e5e5',
+                            ? '#171717'
+                            : '#d4d4d4',
                     }}
-                    style={{ width: `${60 + (idx % 3) * 15}%` }}
-                    transition={{ duration: 0.3 }}
-                  />
+                    style={{
+                      fontWeight: idx === currentSentenceIdx ? 500 : 400,
+                    }}
+                  >
+                    {sentence}
+                  </motion.p>
                 ))}
               </div>
             </div>
 
             {/* Voice level visualizer */}
-            <div className="space-y-2">
-              <p className="text-sm text-gray-600 tracking-[-0.5px]">Your voice level</p>
-              <div className="bg-gray-50 border border-gray-200 rounded p-4">
-                <div className="flex items-end justify-center gap-[4px] h-[40px]">
+            <div>
+              <p className="text-sm text-gray-500 tracking-[-0.5px] mb-2">Your voice level</p>
+              <div className="bg-gray-50 border border-gray-200 rounded-lg px-5 py-3">
+                <div className="flex items-end justify-center gap-[5px] h-[36px]">
                   {voiceLevels.map((level, idx) => (
                     <motion.div
                       key={idx}
-                      className="w-1 rounded-full"
+                      className="w-[3px] rounded-full"
                       animate={{
-                        height: `${level * 40}px`,
-                        backgroundColor: level > 0.6 ? '#404040' : level > 0.3 ? '#737373' : '#a3a3a3',
+                        height: `${level * 36}px`,
+                        backgroundColor: level > 0.6 ? '#3b82f6' : level > 0.3 ? '#93c5fd' : '#d4d4d4',
                       }}
                       transition={{ duration: 0.1 }}
                     />
@@ -164,31 +176,28 @@ export default function RecordPage() {
             </div>
 
             {/* Recording controls */}
-            <div className="mt-auto flex flex-col items-center gap-3 pb-2">
+            <div className="flex flex-col items-center gap-2 pt-1 pb-1">
               <div className="flex items-center gap-4">
-                {/* Timer */}
-                <span className="text-sm text-gray-600 tracking-[-0.5px] w-12 text-right">
+                <span className="text-sm text-gray-500 tracking-[-0.5px] w-12 text-right tabular-nums">
                   {formatTime(elapsed)}
                 </span>
 
-                {/* Stop button */}
                 <motion.button
-                  className="w-[56px] h-[56px] rounded-full bg-black flex items-center justify-center"
+                  className="w-[52px] h-[52px] rounded-full bg-[#ef4444] flex items-center justify-center"
                   whileTap={{ scale: 0.9 }}
                   onClick={stopRecording}
                 >
-                  <div className="w-5 h-5 rounded-sm bg-white" />
+                  <div className="w-[18px] h-[18px] rounded-[3px] bg-white" />
                 </motion.button>
 
-                {/* Spacer for centering */}
                 <span className="w-12" />
               </div>
-
-              <p className="text-xs text-gray-500 tracking-[-0.5px]">Tap to stop</p>
+              <p className="text-xs text-gray-400 tracking-[-0.5px]">Tap to stop</p>
             </div>
           </motion.div>
         )}
 
+        {/* ── Idle ── */}
         {state === 'idle' && (
           <motion.div
             key="idle"
@@ -201,21 +210,19 @@ export default function RecordPage() {
               <h2 className="text-lg font-normal text-black tracking-[-0.5px]">
                 Practice speaking
               </h2>
-              <p className="text-sm text-gray-600 tracking-[-0.5px]">
+              <p className="text-sm text-gray-500 tracking-[-0.5px]">
                 Record yourself reading the script aloud.
               </p>
             </div>
 
             {elapsed > 0 && (
-              <div className="text-center space-y-1">
-                <p className="text-sm text-gray-500 tracking-[-0.5px]">
-                  Last recording: {formatTime(elapsed)}
-                </p>
-              </div>
+              <p className="text-sm text-gray-400 tracking-[-0.5px]">
+                Last recording: {formatTime(elapsed)}
+              </p>
             )}
 
             <motion.button
-              className="w-full h-[44px] bg-black text-white rounded text-sm tracking-[-0.5px]"
+              className="w-full h-[44px] bg-black text-white rounded-lg text-sm tracking-[-0.5px]"
               whileHover={{ scale: 1.015 }}
               whileTap={{ scale: 0.975 }}
               transition={{ type: 'spring', stiffness: 400, damping: 25 }}
@@ -227,13 +234,13 @@ export default function RecordPage() {
             {elapsed > 0 && (
               <div className="flex gap-3 w-full">
                 <motion.button
-                  className="flex-1 h-[40px] rounded-full bg-gray-100 border border-gray-200 text-sm text-black tracking-[-0.5px]"
+                  className="flex-1 h-[40px] rounded-full bg-white border border-gray-200 text-sm text-gray-600 tracking-[-0.5px]"
                   whileTap={{ scale: 0.95 }}
                 >
                   Play back
                 </motion.button>
                 <motion.button
-                  className="flex-1 h-[40px] rounded-full bg-gray-100 border border-gray-200 text-sm text-black tracking-[-0.5px]"
+                  className="flex-1 h-[40px] rounded-full bg-white border border-gray-200 text-sm text-gray-600 tracking-[-0.5px]"
                   whileTap={{ scale: 0.95 }}
                 >
                   Save
