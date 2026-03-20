@@ -35,5 +35,8 @@ yarn-debug.log*
 yarn-error.log*
 pnpm-debug.log*
 
+# MCP
+.mcp.json
+
 # TypeScript
 *.tsbuildinfo
