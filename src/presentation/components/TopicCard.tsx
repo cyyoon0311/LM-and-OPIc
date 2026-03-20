@@ -19,7 +19,7 @@ export function TopicCard({ label, selected, onToggle }: TopicCardProps) {
       whileTap={{ scale: 0.97 }}
     >
       <motion.span
-        className="text-[14px] tracking-[-0.5px] font-normal"
+        className="text-sm font-normal"
         animate={{ color: selected ? '#ffffff' : '#404040' }}
         transition={{ duration: 0.15 }}
       >
@@ -33,9 +33,9 @@ export function TopicCard({ label, selected, onToggle }: TopicCardProps) {
             animate={{ opacity: 1, scale: 1 }}
             exit={{ opacity: 0, scale: 0.5 }}
             transition={{ duration: 0.15 }}
-            className="absolute top-2 right-2 w-4 h-4 bg-white rounded-[2px] flex items-center justify-center"
+            className="absolute top-2 right-2 w-4 h-4 bg-white rounded-sm flex items-center justify-center"
           >
-            <div className="w-2 h-[4px] bg-[#262626] rounded-[1px]" />
+            <div className="w-2 h-[4px] bg-gray-800 rounded-[1px]" />
           </motion.div>
         )}
       </AnimatePresence>
