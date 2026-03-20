@@ -1,11 +1,13 @@
 import type { OPIcLevel, Topic } from '@/domain/types'
 
 export const LEVELS: readonly OPIcLevel[] = [
+  'IL',
   'IM1',
   'IM2',
   'IM3',
   'IH',
   'AL',
+  'AM',
 ] as const
 
 export const TOPICS: Topic[] = [

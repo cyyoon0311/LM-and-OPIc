@@ -3,7 +3,7 @@ import { motion } from 'framer-motion'
 interface ButtonProps {
   children: React.ReactNode
   onClick?: () => void
-  variant?: 'primary' | 'secondary'
+  variant?: 'primary' | 'secondary' | 'outline' | 'ghost'
   disabled?: boolean
   className?: string
 }
@@ -15,10 +15,12 @@ export function Button({
   disabled = false,
   className = '',
 }: ButtonProps) {
-  const base = 'w-full h-[44px] rounded text-sm font-normal'
+  const base = 'w-full h-[44px] rounded text-sm font-normal tracking-[-0.5px]'
   const variants = {
     primary: 'bg-black text-white',
-    secondary: 'bg-gray-100 text-gray-700 border border-gray-200',
+    secondary: 'bg-gray-50 text-gray-700 border border-gray-200',
+    outline: 'bg-transparent text-gray-600 border border-gray-300',
+    ghost: 'bg-transparent text-gray-500',
   }
 
   return (

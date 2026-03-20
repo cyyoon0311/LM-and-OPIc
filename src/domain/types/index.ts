@@ -6,7 +6,7 @@ export interface OPIcSentence {
   category: string
 }
 
-export type OPIcLevel = 'IM1' | 'IM2' | 'IM3' | 'IH' | 'AL'
+export type OPIcLevel = 'IM1' | 'IM2' | 'IM3' | 'IH' | 'IL' | 'AM' | 'AL'
 
 export interface Topic {
   id: string
